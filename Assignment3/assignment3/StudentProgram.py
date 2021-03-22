@@ -6,6 +6,54 @@ import pandas as pd
 conn = sqlite3.connect('./student.db')
 mycursor = conn.cursor()
 
+#helper functions are below
+
+def userExists(idNum):
+    result = conn.execute("SELECT COUNT(*) FROM Student S WHERE S.StudentID = ?", idNum)
+    conn.commit()
+
+    # making sure the requested student ID# is in the database
+    for i in result:
+        for j in i:
+            if j == 0:  # if found == 0
+                print("Error! No student with requested ID # found in the Database. Please try again")
+                return 0
+    else:
+        return 1
+
+def stringNotEmpty(value):
+    if value == "":
+        print("Value cannot be empty. All input fields are required")
+        exit(1)
+
+def validateInput(num):
+    if num.isnumeric():
+        return True
+    else:
+        print("Error on one of the numeric inputs. Please check the inputs")
+        exit(1)
+
+def validateGPA(num):
+    pattern = "^\d{1}.\d{1}"
+    isValid = re.match(pattern, num)
+
+    if isValid:
+        return True
+    else:
+        print("Error in GPA. Please check the input")
+        exit(1)
+
+def validatePhoneNum(num):
+    pattern = "^\((\d{3})\) (\d{3})-(\d{4})$" # for mobile phone number
+    isValid = re.match(pattern, num)
+
+    if isValid:
+        return True
+    else:
+        print("Error in phone number. Please check the input")
+        exit(1)
+
+# begin application functions to be used in main method
 def searchDB():
     mycursor = conn.execute("SELECT * FROM Student")
     conn.commit()
@@ -28,7 +76,7 @@ def createNewStudent():
     stuValues.append(lName)
 
     gpa = input("Please enter the GPA of the student, rounded to the nearest tenth")
-    validateInput(gpa)
+    validateGPA(gpa)
     stuValues.append(gpa)
 
     major = input("Please enter the student's major")
@@ -47,11 +95,15 @@ def createNewStudent():
     stuValues.append(state)
 
     zip = input("Please enter the student's ZIP code that pertains to his/her street address")
+    #the below conditional checks to make sure that the zip code is five digits in length
+    if len(zip) != 5:
+        print("Zip code must be 5 digits")
+        return 1
     validateInput(zip)
     stuValues.append(zip)
 
     phonenum = input("Please enter the student's mobile phone number, in the following format: (xxx) xxx-xxxx. You MUST input the phone number in this format or the program will throw an error")
-    validateInput(phonenum)
+    validatePhoneNum(phonenum)
     stuValues.append(phonenum)
 
     #below we are checking to make sure the user did not leave any fields blank
@@ -66,19 +118,6 @@ def createNewStudent():
 
     print("Student with id {} added".format(stuID))
 
-def userExists(idNum):
-    result = conn.execute("SELECT COUNT(*) FROM Student S WHERE S.StudentID = ?", idNum)
-    conn.commit()
-
-    # making sure the requested student ID# is in the database
-    for i in result:
-        for j in i:
-            if j == 0:  # if found == 0
-                print("Error! No student with requested ID # found in the Database. Please try again")
-                return 0
-    else:
-        return 1
-
 
 def updateStudent():
     IDNumList = [] # list to be used in conjunction with the SQL statement below
@@ -86,16 +125,9 @@ def updateStudent():
     validateInput(IDNum) # validate the ID #
     int(IDNum) # type casting
     IDNumList.append(IDNum)
-    userExists(IDNumList)
-    # result = conn.execute("SELECT COUNT(*) FROM Student S WHERE S.StudentID = ?", IDNumList)
-    # conn.commit()
-    #
-    # #making sure the requested student ID# is in the database
-    # for i in result:
-    #     for j in i:
-    #         if j == 0: # if found == 0
-    #             print("Error! No student with requested ID # found in the Database. Please try again")
-    #             return 0
+    # if the user does not exist, return a 1, indicating an error
+    if (not userExists(IDNumList)):
+        return 1
 
     majorUpdate = input("Would you like to update student's major? (Y/N)")
     advisorUpdate = input("Would you like to update student's faculty advisor? (Y/N)")
@@ -125,7 +157,7 @@ def updateStudent():
         newMobilePhone = input("What is the student's new mobile phone number? You must enter the phone number in the following format: (xxx) xxx-xxxx or the program will reject the update")
         queryParams.append(newMobilePhone)
         queryParams.append(IDNum)
-        validateInput(newMobilePhone) #validate the new mobile phone number
+        validatePhoneNum(newMobilePhone) #validate the new mobile phone number
         conn.execute("UPDATE Student SET MobilePhoneNumber = ? WHERE Student.StudentID = ?", queryParams)
         conn.commit()  # commit
         print("Mobile Phone Number field has been updated")
@@ -137,7 +169,6 @@ def deleteStudentByID():
     int(IDNum)  # type casting
     IDNumList.append(IDNum) # set isDeleted to True (or 1)
     if (not userExists(IDNumList)):
-        print("User not found! Enter a new ID")
         return 1
     # result = conn.execute("SELECT COUNT(*) FROM Student S WHERE S.StudentID = ?", IDNumList)
     # conn.commit()
@@ -154,29 +185,6 @@ def deleteStudentByID():
     conn.execute("UPDATE Student SET isDeleted =  ? WHERE Student.StudentID = ?", queryParams) # delete the student with the requested student id # from the list of students in the database
     conn.commit()
     print("Student with ID number: {} has been deleted".format(queryParams[1]))
-
-
-
-def stringNotEmpty(value):
-    if value == "":
-        print("Value cannot be empty. All input fields are required")
-        exit(1)
-
-def validateInput(num):
-    pattern = "^\d{1}.\d{1}"
-    pattern2 = "^\((\d{3})\) (\d{3})-(\d{4})$" # for mobile phone number
-    isValid = re.match(pattern, num)
-    isValid2 = re.match(pattern2, num)
-
-    if num.isnumeric():
-        return True
-    elif isValid:
-        return True
-    elif isValid2: # if the mobile phone number is valid
-        return True
-    else:
-        print("Error on one of the numeric inputs. Please check the inputs")
-        exit(1)
 
 def searchStudentsByAttribute():
     searchParam = input("How would you like to search students? Type Major, GPA, City, State or Advisor. NOTE: Nothing returned indicates that there are no students matching the requested criteria/attributes")
@@ -224,9 +232,9 @@ def searchStudentsByAttribute():
 
 
 if __name__ == "__main__":
-    userOption = int(input("Welcome to the student database program. From here, you will be able to insert, update, delete, or search your students that are currently in the student database. \n"
-          "Please indicate the option you would like to perform by typing the number associated with that option: \n 1: Display all students currently in the database as well as their attributes \n 2: Add in a new student into the database"
-          "\n 3: Update a current student (requires the student ID number) \n 4: Delete student by student ID number \n 5: Search/Display students by either Major, GPA, City, State, or Advisor. Type \'0\' to quit"))
+    userOption = int(input("Welcome to the student database program. From here, you will be able to insert, update, delete, or search your students that are currently in the student database. \n "
+                           "Type \'0\' to quit or please indicate the option you would like to perform by typing the number associated with that option: \n 1: Display all students currently in the database as well as their attributes \n 2: Add in a new student into the database"
+          "\n 3: Update a current student (requires the student ID number) \n 4: Delete student by student ID number \n 5: Search/Display students by either Major, GPA, City, State, or Advisor."))
 
     while userOption != 0:
 
@@ -270,5 +278,9 @@ if __name__ == "__main__":
 
         else:
             print("Input not recognized. Please type a value between 1 and 5 (inclusive)")
+            print() # formatting
+            userOption = int(input(
+                "Please type another option, or \'0\' to quit.\n 1: Display all students currently in the database as well as their attributes \n 2: Add in a new student into the database"
+                "\n 3: Update a current student (requires the student ID number) \n 4: Delete student by student ID number \n 5: Search/Display students by either Major, GPA, City, State, or Advisor."))
             continue # go back to the top of the while loop
 
