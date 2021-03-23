@@ -21,15 +21,5 @@ for row in student_data:
     #     listOfStudents.append(i)
     conn.execute("INSERT INTO Student(FirstName, LastName, Address, City, State, ZipCode, MobilePhoneNumber, MAJOR, GPA) VALUES(?,?,?,?,?,?,?,?,?)", row_list)
 
-print(len(row_list))
 
-conn.commit()
-
-
-
-
-
-
-# for row in student_data.iterrows():
-#     conn.executemany("INSERT INTO Student(FirstName, LastName, Address, City, State, ZipCode, MobilePhoneNumber, MAJOR, GPA) VALUES(?,?,?,?,?,?,?,?,?)", row)
-#     print("entered info")
+conn.commit() #commit the SQL query above (on line 22)

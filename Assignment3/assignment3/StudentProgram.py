@@ -21,11 +21,27 @@ def userExists(idNum):
     else:
         return 1
 
+def studentAlreadyExists(idNum):
+    idNumList = [idNum]
+    result = conn.execute("SELECT COUNT(*) FROM Student S WHERE S.StudentID = ?", idNumList)
+    conn.commit()
+
+
+    # making sure the requested student ID# is not already in the database
+    for i in result:
+        for j in i:
+            if j == 1:  # if found == 0
+                print("Error! A student with that ID number already exists. Please select a different ID number and try again.")
+                return 1
+    else:
+        return 0
+
 def stringNotEmpty(value):
     if value == "":
         print("Value cannot be empty. All input fields are required")
         exit(1)
 
+#the function below is used primarily with the numerical data to ensure the user does not type in invalid data (ex. user types in "hello" for student GPA)
 def validateInput(num):
     if num.isnumeric():
         return True
@@ -33,6 +49,7 @@ def validateInput(num):
         print("Error on one of the numeric inputs. Please check the inputs")
         exit(1)
 
+#used to validate the GPA data that the user passes in when requested
 def validateGPA(num):
     pattern = "^\d{1}.\d{1}"
     isValid = re.match(pattern, num)
@@ -44,7 +61,7 @@ def validateGPA(num):
         exit(1)
 
 def validatePhoneNum(num):
-    pattern = "^\((\d{3})\) (\d{3})-(\d{4})$" # for mobile phone number
+    pattern = "\((\d{3})\) (\d{3})-(\d{4})" # for mobile phone number
     isValid = re.match(pattern, num)
 
     if isValid:
@@ -67,6 +84,9 @@ def createNewStudent():
 
     stuID = input("Please enter the student ID Number, then press \'Enter\'")
     validateInput(stuID)
+    #below we check to make sure that the student ID # does not already exist in the DB. Since student ID# is the primary key, it cannot be duplicated. The db will already do this, but here we make it pretty for the user
+    if(studentAlreadyExists(stuID)):
+        return 1
     stuValues.append(stuID)
 
     fName = input("Please enter the firstname of the student, then press \'Enter\'")
@@ -155,9 +175,9 @@ def updateStudent():
     if mobilephoneUpdate == "Y" or mobilephoneUpdate == "y":
         queryParams = []  # list to be used in conjunction with the SQL statement below
         newMobilePhone = input("What is the student's new mobile phone number? You must enter the phone number in the following format: (xxx) xxx-xxxx or the program will reject the update")
+        validatePhoneNum(newMobilePhone) #validate the new mobile phone number
         queryParams.append(newMobilePhone)
         queryParams.append(IDNum)
-        validatePhoneNum(newMobilePhone) #validate the new mobile phone number
         conn.execute("UPDATE Student SET MobilePhoneNumber = ? WHERE Student.StudentID = ?", queryParams)
         conn.commit()  # commit
         print("Mobile Phone Number field has been updated")
@@ -167,7 +187,7 @@ def deleteStudentByID():
     IDNum = input("Please input the ID# of the student you would like to delete: ")
     validateInput(IDNum)  # validate the ID #
     int(IDNum)  # type casting
-    IDNumList.append(IDNum) # set isDeleted to True (or 1)
+    IDNumList.append(IDNum)
     if (not userExists(IDNumList)):
         return 1
     # result = conn.execute("SELECT COUNT(*) FROM Student S WHERE S.StudentID = ?", IDNumList)
@@ -181,7 +201,7 @@ def deleteStudentByID():
     #             return 0
 
     # if the student with the requested ID # is in the database
-    queryParams = [1, IDNum]
+    queryParams = [1, IDNum] # set isDeleted to True (or 1)
     conn.execute("UPDATE Student SET isDeleted =  ? WHERE Student.StudentID = ?", queryParams) # delete the student with the requested student id # from the list of students in the database
     conn.commit()
     print("Student with ID number: {} has been deleted".format(queryParams[1]))
@@ -199,6 +219,7 @@ def searchStudentsByAttribute():
 
     elif searchParam == "GPA":
         GPAToSearch = input("What is the GPA by which you would like to search the student DB?")
+        validateGPA(GPAToSearch)
         theGPA = [GPAToSearch]
         cursor = conn.execute("SELECT * FROM Student S WHERE S.GPA = ?", theGPA)
 
