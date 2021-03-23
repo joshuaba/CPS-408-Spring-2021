@@ -39,7 +39,9 @@ def studentAlreadyExists(idNum):
 def stringNotEmpty(value):
     if value == "":
         print("Value cannot be empty. All input fields are required")
-        exit(1)
+        return False
+    else:
+        return True
 
 #the function below is used primarily with the numerical data to ensure the user does not type in invalid data (ex. user types in "hello" for student GPA)
 def validateInput(num):
@@ -47,7 +49,7 @@ def validateInput(num):
         return True
     else:
         print("Error on one of the numeric inputs. Please check the inputs")
-        exit(1)
+        return False
 
 #used to validate the GPA data that the user passes in when requested
 def validateGPA(num):
@@ -58,7 +60,7 @@ def validateGPA(num):
         return True
     else:
         print("Error in GPA. Please check the input")
-        exit(1)
+        return False
 
 def validatePhoneNum(num):
     pattern = "\((\d{3})\) (\d{3})-(\d{4})" # for mobile phone number
@@ -68,7 +70,7 @@ def validatePhoneNum(num):
         return True
     else:
         print("Error in phone number. Please check the input")
-        exit(1)
+        return False
 
 # begin application functions to be used in main method
 def searchDB():
@@ -83,7 +85,8 @@ def createNewStudent():
     print("Please input the following parameters for the new student: StudentID Number, FirstName, LastName, GPA, Major, FacultyAdvisor, Address (only street address), City, State, ZIP Code, MobilePhoneNumber")
 
     stuID = input("Please enter the student ID Number, then press \'Enter\'")
-    validateInput(stuID)
+    if(not validateInput(stuID)):
+        return 1
     #below we check to make sure that the student ID # does not already exist in the DB. Since student ID# is the primary key, it cannot be duplicated. The db will already do this, but here we make it pretty for the user
     if(studentAlreadyExists(stuID)):
         return 1
@@ -96,7 +99,8 @@ def createNewStudent():
     stuValues.append(lName)
 
     gpa = input("Please enter the GPA of the student, rounded to the nearest tenth")
-    validateGPA(gpa)
+    if(not validateGPA(gpa)):
+        return 1
     stuValues.append(gpa)
 
     major = input("Please enter the student's major")
@@ -119,16 +123,19 @@ def createNewStudent():
     if len(zip) != 5:
         print("Zip code must be 5 digits")
         return 1
-    validateInput(zip)
+    if(not validateInput(zip)):
+        return 1
     stuValues.append(zip)
 
     phonenum = input("Please enter the student's mobile phone number, in the following format: (xxx) xxx-xxxx. You MUST input the phone number in this format or the program will throw an error")
-    validatePhoneNum(phonenum)
+    if(not validatePhoneNum(phonenum)):
+        return 1
     stuValues.append(phonenum)
 
     #below we are checking to make sure the user did not leave any fields blank
     for i in stuValues:
-        stringNotEmpty(i)
+        if(not stringNotEmpty(i)):
+            return 1
 
     #if the user is being added, he is obviously not deleted, so set isDeleted to False (or 0)
     stuValues.append(False)
@@ -142,7 +149,8 @@ def createNewStudent():
 def updateStudent():
     IDNumList = [] # list to be used in conjunction with the SQL statement below
     IDNum= input("Please input the ID# of the student you would like to update: ")
-    validateInput(IDNum) # validate the ID #
+    if(not validateInput(IDNum)): # validate the ID #
+        return 1
     int(IDNum) # type casting
     IDNumList.append(IDNum)
     # if the user does not exist, return a 1, indicating an error
@@ -175,7 +183,8 @@ def updateStudent():
     if mobilephoneUpdate == "Y" or mobilephoneUpdate == "y":
         queryParams = []  # list to be used in conjunction with the SQL statement below
         newMobilePhone = input("What is the student's new mobile phone number? You must enter the phone number in the following format: (xxx) xxx-xxxx or the program will reject the update")
-        validatePhoneNum(newMobilePhone) #validate the new mobile phone number
+        if(not validatePhoneNum(newMobilePhone)): #validate the new mobile phone number
+            return 1
         queryParams.append(newMobilePhone)
         queryParams.append(IDNum)
         conn.execute("UPDATE Student SET MobilePhoneNumber = ? WHERE Student.StudentID = ?", queryParams)
@@ -185,7 +194,8 @@ def updateStudent():
 def deleteStudentByID():
     IDNumList = []  # list to be used in conjunction with the SQL statement below
     IDNum = input("Please input the ID# of the student you would like to delete: ")
-    validateInput(IDNum)  # validate the ID #
+    if(not validateInput(IDNum)):  # validate the ID #
+        return 1
     int(IDNum)  # type casting
     IDNumList.append(IDNum)
     if (not userExists(IDNumList)):
@@ -219,7 +229,8 @@ def searchStudentsByAttribute():
 
     elif searchParam == "GPA":
         GPAToSearch = input("What is the GPA by which you would like to search the student DB?")
-        validateGPA(GPAToSearch)
+        if(not validateGPA(GPAToSearch)):
+            return 1
         theGPA = [GPAToSearch]
         cursor = conn.execute("SELECT * FROM Student S WHERE S.GPA = ?", theGPA)
 
