@@ -9,8 +9,9 @@ db = mysql.connector.connect(
     database="Assignments"
 )
 
+mycursor = db.cursor(buffered=True)
+
 def findIDOfCorrespondingCourse(courseName):
-    mycursor = db.cursor(buffered=True)
 
     # courseCode = []
     # courseCode.append("CPSC 231")
@@ -18,8 +19,8 @@ def findIDOfCorrespondingCourse(courseName):
     # db.commit()
     # return courseID
 
-    results = mycursor.execute("SELECT * FROM Assignments")
-    db.commit()
+    mycursor.execute("SELECT * FROM Assignments")
+    results = mycursor.fetchall()
 
     print(results)
 
@@ -27,5 +28,51 @@ def findIDOfCorrespondingCourse(courseName):
 
 foundCourseIDs = findIDOfCorrespondingCourse("CPSC 231")
 
-for i in foundCourseIDs:
-    print(i)
+def printAllRecords():
+    mycursor.execute("SELECT * FROM Assignments")
+    results = mycursor.fetchall()
+    print(results)
+    return
+
+def addAssignment(courseid, name, dueDate):
+    mycursor.execute(
+        'Insert into Assignments(CourseID, AssignmentName, AssignmentDueDate) VALUES (?,?,?)',
+        (courseid, name, dueDate,))
+    db.commit()
+    return
+
+def addCourse(instructorID, dept, courseName, courseCode):
+    mycursor.execute(
+        'Insert into Assignments(CourseInstructorID, DepartmentOfCourse, CourseName, CourseCode) VALUES (?,?,?,?)',
+        (instructorID, dept, courseName, courseCode,))
+    db.commit()
+    return
+
+def addDepartment(name, collegeid):
+    mycursor.execute(
+        'Insert into Assignments(DepartmentName, CollegeID) VALUES (?,?)',
+        (name, collegeid,))
+    db.commit()
+    return
+
+def addCourse(departmentID, name, rank, tenure):
+    mycursor.execute(
+        'Insert into Assignments(DepartmentID, FacultyName, FacultyRank, isTenured) VALUES (?,?,?,?)',
+        (departmentID, name, rank, tenure,))
+    db.commit()
+    return
+
+def addCollege(name, NumMajors, NumMinors, grad):
+    mycursor.execute(
+        'Insert into Assignments(CollegeName, NumOfMajors, NumOfMinors, gradDegreeOffered) VALUES (?,?,?,?)',
+        (name, NumMajors, NumMinors, grad,))
+    db.commit()
+    return
+
+
+
+
+
+
+#for i in foundCourseIDs:
+    #print(i)
