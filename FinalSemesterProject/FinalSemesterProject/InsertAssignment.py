@@ -5,7 +5,7 @@ import EstablishConnection
 
 mycursor = EstablishConnection.db.cursor()
 
-def addAssignment():
+def theAssignmentDetails():
     print("Please enter the following properties of the assignment you wish to enter into the Assignments database: ")
     print() # formatting
 
@@ -17,15 +17,17 @@ def addAssignment():
 
     print(correspondingCourseID)
 
-    mycursor.execute("INSERT INTO Assignments VALUES(%s, %s, %s, %s);", (correspondingCourseID, assignmentName, assignmentDueDate))
+    mycursor.execute("INSERT INTO Assignments VALUES (?, ?, ?);", (correspondingCourseID, assignmentName, assignmentDueDate,))
     EstablishConnection.db.commit()
 
     print("Student successfully added")
 
-def findIDOfCorrespondingCourse(courseName):
+def findIDOfCorrespondingCourse(courseCode):
     mycursor = EstablishConnection.db.cursor()
 
-    courseID = mycursor.execute("SELECT CourseID FROM Courses WHERE CourseCode = \"CPSC 231\"")
+    mycursor.execute('SELECT CourseID FROM Courses WHERE CourseCode = ?;', (courseCode,))
+    courseID = mycursor.fetchall()
+
 
     if(courseID == "None"):
         print("Error. There is no course with that course code in the Courses database. Please enter another course code")
