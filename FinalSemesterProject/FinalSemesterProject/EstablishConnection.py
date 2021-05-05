@@ -27,7 +27,7 @@ def findIDOfCorrespondingCourse(courseName):
 
     return results
 
-foundCourseIDs = findIDOfCorrespondingCourse("CPSC 231")
+# foundCourseIDs = findIDOfCorrespondingCourse("CPSC 231")
 
 def printAllRecords():
     mycursor.execute("SELECT * FROM Assignments")
@@ -79,7 +79,7 @@ def addCollege(name, NumMajors, NumMinors, grad):
     db.commit()
     return
 
-printAllRecords()
+# printAllRecords()
 
 
 
