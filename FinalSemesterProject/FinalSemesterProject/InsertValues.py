@@ -167,8 +167,44 @@ def findIDOfCorrespondingSchool(correspondingCollegeName):
     return collegeIDValue
 
 # theAssignmentDetails()
-theAssignmentDetails()
+# theAssignmentDetails()
 
+def findNumOfAssignmentsOutstandingByDepartment(departmentName):
+    mycursor.execute('SELECT AssignmentID FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID INNER JOIN Department ON Courses.DepartmentOfCourse = Department.DepartmentID '
+                     'WHERE DepartmentName = %s;', (departmentName,))
+    results = mycursor.fetchall()
 
+    for i in results:
+        print(results)
 
+def findNumOfAssignmentsOutStandingByFaculty(facultyName):
+    mycursor.execute('SELECT AssignmentID FROM Assignments INNER JOIN Courses on Assignments.CourseID = Courses.CourseID INNER JOIN Faculty ON Courses.CourseInstructorID = Faculty.FacultyID '
+                     'WHERE FacultyName = %s;', (facultyName,))
+    results = mycursor.fetchall()
 
+    for i in results:
+        print(results)
+
+def findNumOfAssignmentsOutStandingBySchool(schoolName):
+    mycursor.execute('SELECT AssignmentID FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID INNER JOIN Department ON Courses.DepartmentOfCourse = Department.DepartmentID INNER JOIN '
+                     'universitySchools ON Department.collegeID = universitySchools.collegeID WHERE CollegeName = %s;', (schoolName,))
+    results = mycursor.fetchall()
+
+    for i in results:
+        print(i)
+
+def findNumOfAssignmentsOutStandingByCourse(courseName):
+    mycursor.execute('SELECT AssignmentID FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID WHERE CourseName = %s;', (courseName,))
+    results = mycursor.fetchall()
+
+    for i in results:
+        print(i)
+
+# mycursor.execute('SELECT Faculty.educationLevel, COUNT(*) as \'Count of Courses\' FROM Courses, Faculty WHERE Courses.CourseInstructorID = Faculty.FacultyID GROUP BY Faculty.educationLevel '
+#                  'HAVING Faculty.educationLevel = \'Ph.D.\'')
+
+# To complete down below; getting some syntax errors for the sub-query
+mycursor.execute('SELECT COUNT(*) FROM Department WHERE DepartmentID = (SELECT DepartmentOfCourse FROM Courses INNER JOIN Assignments ON Courses.CourseID = Assignments.CourseID WHERE Assignments.AssignmentDueDate = \'2021-01-11\''))
+results = mycursor.fetchall()
+
+#findNumOfAssignmentsOutStandingByCourse("United States History: 1918-present")
