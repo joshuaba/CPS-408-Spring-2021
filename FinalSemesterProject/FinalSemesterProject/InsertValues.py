@@ -208,3 +208,12 @@ mycursor.execute('SELECT COUNT(*) FROM Department WHERE DepartmentID = (SELECT D
 results = mycursor.fetchall()
 
 #findNumOfAssignmentsOutStandingByCourse("United States History: 1918-present")
+
+
+def generateReport(tuple):
+    #SELECT
+    #address,
+    #address2,
+    #address_id
+    #FROM location INTO OUTFILE 'C:\ProgramData\MySQL\location.csv';
+    return
