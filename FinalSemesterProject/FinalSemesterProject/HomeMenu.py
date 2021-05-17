@@ -30,7 +30,7 @@ def mainMenu():
         userOption = input("Please input the number associated with the option you would like to perform (type \"Q\" or \"q\" to exit the program: ")
 
         if((userOption) == 'Q' or userOption == 'q'):
-            print() #formatting 
+            print() #formatting
             print("Exiting")
             break
 
