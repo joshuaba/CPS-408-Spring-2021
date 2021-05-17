@@ -6,6 +6,7 @@ from faker import Faker
 import csv
 import datetime
 
+
 def mainMenu():
     print("Welcome to the assignment database. You have the following options:\n\
           1: Display all assignments currently in the database\n\
@@ -177,8 +178,17 @@ def mainMenu():
                          3: Assignments and Department\n\
                          4: Assignments and College")
 
-    # elif(userOption == 7):
-    #     InsertDeleteValues.generateReport(theTuple)
+    elif(userOption == 7):
+        repeat = True
+        while (repeat):
+            selection = input("Which table would you like to have a report of? (Assignments, Courses, Departments, Faculty, Schools)")
+            if selection.toLowerCase().equals("Assignments"):
+                EstablishConnection.returnAssignments()
+            elif selection.toLowerCase().equals("exit"):
+                repeat = False
+            else:
+                print("Invalid input. Type \'exit\' to quit.")
+
 
     elif(userOption == 8):
         InsertDeleteValues.CommitAction() # Commit all of the actions the user has taken
@@ -186,7 +196,6 @@ def mainMenu():
     elif(userOption == 9):
         InsertDeleteValues.RollbackAction() # Rollback all of the actions the user has taken
 
-if __name__ == "__main__":
-    mainMenu()
+mainMenu()
 
 

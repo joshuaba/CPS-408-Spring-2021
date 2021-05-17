@@ -2,6 +2,8 @@ import mysql.connector
 from faker import Faker
 import csv
 import datetime
+import pandas as pd
+import pymysql
 
 db = mysql.connector.connect(
     host="34.94.39.105",
@@ -9,6 +11,8 @@ db = mysql.connector.connect(
     password="4IserveHim!!",
     database="Assignments"
 )
+
+dbcon = pymysql.connect("34.94.39.105", "mydbappuser", "4IserveHim!!", "Assignments")
 
 mycursor = db.cursor(buffered=True)
 
@@ -52,6 +56,48 @@ def printAllAssignments():
     #     iasTuple = tuple(iasList) # convert iasList back into a tuple, the original type of i
     #     print(iasTuple)
 
+def returnAssignments():
+    try:
+        SQL_Query = pd.read_sql_query(
+            '''select
+              *
+              from Assignments''', dbcon)
+
+        df = pd.DataFrame(SQL_Query, columns=['AssignmentID', 'CourseID', 'AssignmentName', 'AssignmentDueDate', 'isDeleted'])
+        results = df.to_csv('assignments.csv')
+    except:
+        print("Error: unable to convert the data")
+
+
+    return
+
+
+def returnCourses():
+    mycursor.execute('SELECT * FROM Courses')
+    results = mycursor.fetchall()
+
+    return results
+
+
+def returnFaculty():
+    mycursor.execute('SELECT * FROM Faculty')
+    results = mycursor.fetchall()
+
+    return results
+
+
+def returnDepartment():
+    mycursor.execute('SELECT * FROM Department')
+    results = mycursor.fetchall()
+
+    return results
+
+
+def returnSchool():
+    mycursor.execute('SELECT * FROM universitySchools')
+    results = mycursor.fetchall()
+
+    return results
 
 def displayCourseData():
     mycursor.execute('SELECT * FROM Courses')
