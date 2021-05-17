@@ -12,9 +12,9 @@ db = mysql.connector.connect(
     database="Assignments"
 )
 
-dbcon = pymysql.connect("34.94.39.105", "mydbappuser", "4IserveHim!!", "Assignments")
-
 mycursor = db.cursor(buffered=True)
+
+dbcon = pymysql.connect(host='34.94.39.105',user='mydbappuser',password='4IserveHim!!',db='Assignments',)
 
 def findIDOfCorrespondingCourse(courseName):
 
@@ -73,31 +73,70 @@ def returnAssignments():
 
 
 def returnCourses():
-    mycursor.execute('SELECT * FROM Courses')
-    results = mycursor.fetchall()
+    try:
+        SQL_Query = pd.read_sql_query(
+            '''select
+              *
+              from Courses''', dbcon)
 
-    return results
+        df = pd.DataFrame(SQL_Query,
+                          columns=['CourseID', 'CourseInstructorID', 'DepartmentOfCourse', 'CourseName', 'CourseCode', 'isDeleted'])
+        results = df.to_csv('courses.csv')
+    except:
+        print("Error: unable to convert the data")
+
+    return
 
 
 def returnFaculty():
-    mycursor.execute('SELECT * FROM Faculty')
-    results = mycursor.fetchall()
+    try:
+        SQL_Query = pd.read_sql_query(
+            '''select
+              *
+              from Faculty''', dbcon)
 
-    return results
+        df = pd.DataFrame(SQL_Query,
+                          columns=['FacultyID', 'DepartmentID', 'FacultyName', 'FacultyRank', 'isTenured',
+                                   'educationLevel', 'isDeleted'])
+        results = df.to_csv('faculty.csv')
+    except:
+        print("Error: unable to convert the data")
+
+    return
 
 
 def returnDepartment():
-    mycursor.execute('SELECT * FROM Department')
-    results = mycursor.fetchall()
+    try:
+        SQL_Query = pd.read_sql_query(
+            '''select
+              *
+              from Department''', dbcon)
 
-    return results
+        df = pd.DataFrame(SQL_Query,
+                          columns=['DepartmentID', 'DepartmentName', 'CollegeID',
+                                   'isDeleted'])
+        results = df.to_csv('departments.csv')
+    except:
+        print("Error: unable to convert the data")
+
+    return
 
 
 def returnSchool():
-    mycursor.execute('SELECT * FROM universitySchools')
-    results = mycursor.fetchall()
+    try:
+        SQL_Query = pd.read_sql_query(
+            '''select
+              *
+              from universitySchools''', dbcon)
 
-    return results
+        df = pd.DataFrame(SQL_Query,
+                          columns=['CollegeID', 'CollegeName', 'NumOfMajors', 'NumOfMinors', 'gradDegreeOffered',
+                                   'isDeleted'])
+        results = df.to_csv('colleges.csv')
+    except:
+        print("Error: unable to convert the data")
+
+    return
 
 def displayCourseData():
     mycursor.execute('SELECT * FROM Courses')
@@ -166,17 +205,17 @@ def addCollege(name, NumMajors, NumMinors, grad):
 def updateAssignment():
     id = int(input("What is the ID of the assignment you would like to update?"))
     column = input("Which attribute would you like to update? (Name, DueDate, All) ")
-    if column.toLowerCase() == "name":
+    if column.lower() == "name":
         name = input("What would you like to change the name of the assignment to?")
         mycursor.execute('Update Assignment set AssignmentName = ? where AssignmentID = ?', (name, id))
         db.commit()
 
-    elif column.toLowerCase() == "duedate":
+    elif column.lower() == "duedate":
         dd = input("What would you like to change the due date of the assignment to?")
         mycursor.execute('Update Assignment set AssignmentDueDate = ? where AssignmentID = ?', (dd, id))
         db.commit()
 
-    elif column.toLowerCase() == "all":
+    elif column.lower() == "all":
         name = input("What would you like to change the name of the assignment to?")
         mycursor.execute('Update Assignment set AssignmentName = ? where AssignmentID = ?', (name, id))
         db.commit()
@@ -193,17 +232,17 @@ def updateAssignment():
 def updateCourse():
     id = int(input("What is the ID of the course you would like to update?"))
     column = input("Which attribute would you like to update? (Name, Code, All) ")
-    if column.toLowerCase() == "name":
+    if column.lower() == "name":
         name = input("What would you like to change the name of the course to?")
         mycursor.execute('Update Courses set CourseName = ? where CourseID = ?', (name, id))
         db.commit()
 
-    elif column.toLowerCase() == "code":
+    elif column.lower() == "code":
         code = input("What would you like to change the code of the course to?")
         mycursor.execute('Update Courses set CourseCode = ? where CourseID = ?', (code, id))
         db.commit()
 
-    elif column.toLowerCase() == "all":
+    elif column.lower() == "all":
         name = input("What would you like to change the name of the course to?")
         mycursor.execute('Update Courses set CourseName = ? where CourseID = ?', (name, id))
         db.commit()
@@ -228,27 +267,27 @@ def updateDepartment():
 def updateFaculty():
     id = int(input("What is the ID of the Faculty you would like to update?"))
     column = input("Which attribute would you like to update? (Name, Rank, Tenure, Education Level, all) ")
-    if column.toLowerCase() == "name":
+    if column.lower() == "name":
         name = input("What would you like to change the name of the faculty to?")
         mycursor.execute('Update Faculty set FacultyName = ? where FacultyID = ?', (name, id))
         db.commit()
 
-    elif column.toLowerCase() == "rank":
+    elif column.lower() == "rank":
         rank = input("What would you like to change the rank of the faculty to?")
         mycursor.execute('Update Faculty set FacultyRank = ? where FacultyID = ?', (rank, id))
         db.commit()
 
-    elif column.toLowerCase() == "education level":
+    elif column.lower() == "education level":
         level = input("What would you like to change the education level of the faculty to?")
         mycursor.execute('Update Faculty set educationLevel = ? where FacultyID = ?', (level, id))
         db.commit()
 
-    elif column.toLowerCase() == "tenure":
+    elif column.lower() == "tenure":
         status = input("What would you like to change the tenure status of the faculty to?")
         mycursor.execute('Update Faculty set isTenured = ? where FacultyID = ?', (status, id))
         db.commit()
 
-    elif column.toLowerCase() == "all":
+    elif column.lower() == "all":
         name = input("What would you like to change the name of the faculty to?")
         mycursor.execute('Update Faculty set FacultyName = ? where FacultyID = ?', (name, id))
         db.commit()
@@ -271,27 +310,27 @@ def updateFaculty():
 def updateCollege():
     id = int(input("What is the ID of the college you would like to update?"))
     column = input("Which attribute would you like to update? (Name, Number of majors, Number of minors, graduate degree, all")
-    if column.toLowerCase() == "name":
+    if column.lower() == "name":
         name = input("What would you like to change the name of the college to?")
         mycursor.execute('Update universitySchools set CollegeName = ? where CollegeID = ?', (name, id))
         db.commit()
 
-    elif column.toLowerCase() == "number of majors":
+    elif column.lower() == "number of majors":
         majors = int(input("What would you like to change the number of majors offered by the college to?"))
         mycursor.execute('Update universitySchools set NumOfMajors = ? where CollegeID = ?', (majors, id))
         db.commit()
 
-    elif column.toLowerCase() == "number of minors":
+    elif column.lower() == "number of minors":
         minors = int(input("What would you like to change the number of minors offered by the college to?"))
         mycursor.execute('Update universitySchools set NumOfMinors = ? where CollegeID = ?', (minors, id))
         db.commit()
 
-    elif column.toLowerCase() == "graduate degree":
+    elif column.lower() == "graduate degree":
         grad = input("What would you like to change the graduate degree offered by the college to?")
         mycursor.execute('Update universitySchools set gradDegreeOffered = ? where CollegeID = ?', (grad, id))
         db.commit()
 
-    elif column.toLowerCase() == "all":
+    elif column.lower() == "all":
         name = input("What would you like to change the name of the college to?")
         mycursor.execute('Update universitySchools set CollegeName = ? where CollegeID = ?', (name, id))
         db.commit()

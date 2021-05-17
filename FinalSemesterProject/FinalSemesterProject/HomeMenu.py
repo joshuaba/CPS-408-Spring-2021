@@ -182,9 +182,17 @@ def mainMenu():
         repeat = True
         while (repeat):
             selection = input("Which table would you like to have a report of? (Assignments, Courses, Departments, Faculty, Schools)")
-            if selection.toLowerCase().equals("Assignments"):
+            if selection.lower() == "assignments":
                 EstablishConnection.returnAssignments()
-            elif selection.toLowerCase().equals("exit"):
+            elif selection.lower() == "courses":
+                EstablishConnection.returnCourses()
+            elif selection.lower() == "departments":
+                EstablishConnection.returnDepartment()
+            elif selection.lower() == "faculty":
+                EstablishConnection.returnFaculty()
+            elif selection.lower() == "schools":
+                EstablishConnection.returnSchool()
+            elif selection.lower() == "exit":
                 repeat = False
             else:
                 print("Invalid input. Type \'exit\' to quit.")
