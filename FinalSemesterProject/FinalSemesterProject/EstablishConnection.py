@@ -33,16 +33,54 @@ def printAllAssignments():
     mycursor.execute("SELECT * FROM Assignments WHERE isDeleted = 0")
     results = mycursor.fetchall()
 
-    # in the below for loops we modify the due date so that it display in the following format: MM/DD/YY instead of showing up as a datetime object
+    print("Assignment ID     Assignment Name/Title     ID of Corresponding Course      Assignment Due Date")
     for i in results:
-        iasList = list(i) # convert the tuple i into a list
-        for j in iasList: # for each element in the list iasList (j are essentially the fields in the tuple)
-            if isinstance(j, datetime.date): # if j is a datetime.date object --> this should only apply to the last field, DueDate
-                iasList.remove(j)
-                j = j.strftime('%m/%d/%y') # convert j from displaying as a datetime object into a string
-                iasList.append(j) # append the new value of j to the list
-        iasTuple = tuple(iasList) # convert iasList back into a tuple, the original type of i
-        print(iasTuple)
+        for j in i:
+            print(j, end = ' ')
+            print("     ", end = ' ')
+        print() # formatting
+
+
+    # in the below for loops we modify the due date so that it display in the following format: MM/DD/YY instead of showing up as a datetime object
+    # for i in results:
+    #     iasList = list(i) # convert the tuple i into a list
+    #     for j in iasList: # for each element in the list iasList (j are essentially the fields in the tuple)
+    #         if isinstance(j, datetime.date): # if j is a datetime.date object --> this should only apply to the last field, DueDate
+    #             iasList.remove(j)
+    #             j = j.strftime('%m/%d/%y') # convert j from displaying as a datetime object into a string
+    #             iasList.append(j) # append the new value of j to the list
+    #     iasTuple = tuple(iasList) # convert iasList back into a tuple, the original type of i
+    #     print(iasTuple)
+
+
+def displayCourseData():
+    mycursor.execute('SELECT * FROM Courses')
+    results = mycursor.fetchall()
+
+    for i in results:
+        print(i)
+
+def displaySchoolData():
+    mycursor.execute('SELECT * FROM universitySchools')
+    results = mycursor.fetchall()
+
+    for i in results:
+        print(i)
+
+def displayFacultyData():
+    mycursor.execute('SELECT * FROM Faculty')
+    results = mycursor.fetchall()
+
+    for i in results:
+        print(i)
+
+
+def displayDepartmentData():
+    mycursor.execute('SELECT * FROM Department')
+    results = mycursor.fetchall()
+
+    for i in results:
+        print(i)
 
 def addAssignment(courseid, name, dueDate):
     mycursor.execute(

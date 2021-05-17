@@ -169,46 +169,43 @@ def findIDOfCorrespondingSchool(correspondingCollegeName):
 # theAssignmentDetails()
 # theAssignmentDetails()
 
-def findNumOfAssignmentsOutstandingByDepartment(departmentName):
-    mycursor.execute('SELECT AssignmentID FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID INNER JOIN Department ON Courses.DepartmentOfCourse = Department.DepartmentID '
-                     'WHERE DepartmentName = %s;', (departmentName,))
-    results = mycursor.fetchall()
-
-    for i in results:
-        print(results)
-
-def findNumOfAssignmentsOutStandingByFaculty(facultyName):
-    mycursor.execute('SELECT AssignmentID FROM Assignments INNER JOIN Courses on Assignments.CourseID = Courses.CourseID INNER JOIN Faculty ON Courses.CourseInstructorID = Faculty.FacultyID '
-                     'WHERE FacultyName = %s;', (facultyName,))
-    results = mycursor.fetchall()
-
-    for i in results:
-        print(results)
-
-def findNumOfAssignmentsOutStandingBySchool(schoolName):
-    mycursor.execute('SELECT AssignmentID FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID INNER JOIN Department ON Courses.DepartmentOfCourse = Department.DepartmentID INNER JOIN '
-                     'universitySchools ON Department.collegeID = universitySchools.collegeID WHERE CollegeName = %s;', (schoolName,))
-    results = mycursor.fetchall()
-
-    for i in results:
-        print(i)
-
-def findNumOfAssignmentsOutStandingByCourse(courseName):
-    mycursor.execute('SELECT AssignmentID FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID WHERE CourseName = %s;', (courseName,))
-    results = mycursor.fetchall()
-
-    for i in results:
-        print(i)
 
 # mycursor.execute('SELECT Faculty.educationLevel, COUNT(*) as \'Count of Courses\' FROM Courses, Faculty WHERE Courses.CourseInstructorID = Faculty.FacultyID GROUP BY Faculty.educationLevel '
 #                  'HAVING Faculty.educationLevel = \'Ph.D.\'')
 
-# To complete down below; getting some syntax errors for the sub-query
-mycursor.execute('SELECT COUNT(*) FROM Department WHERE DepartmentID = (SELECT DepartmentOfCourse FROM Courses INNER JOIN Assignments ON Courses.CourseID = Assignments.CourseID WHERE Assignments.AssignmentDueDate = \'2021-01-11\''))
-results = mycursor.fetchall()
-
 #findNumOfAssignmentsOutStandingByCourse("United States History: 1918-present")
 
+def deleteFromAssignments():
+    idOfAssignment = int(input("What is the id of the assignment you wish to delete? "))
+
+    mycursor.execute('DELETE FROM Assignments WHERE Assignments.AssignmentID = %s;', (idOfAssignment,))
+
+def deleteFromCourses():
+    idOfCourse = int(input("What is the id of the course you wish to delete? "))
+
+    mycursor.execute('DELETE FROM Courses WHERE Courses.CourseID = %s;', (idOfCourse,))
+
+def deleteFromFaculty():
+    idOfFaculty = int(input("What is the id of the faculty member you wish to delete? "))
+
+    mycursor.execute('DELETE FROM Faculty WHERE Faculty.FacultyID = %s;', (idOfFaculty,))
+
+def deleteFromDepartment():
+    idOfDepartment = int(input("What is the id of the assignment you wish to delete? "))
+
+    mycursor.execute('DELETE FROM Department WHERE Department.DepartmentID = %s;', (idOfDepartment,))
+
+def deleteFromUniversitySchools():
+    idOfCollege = int(input("What is the id of the assignment you wish to delete? "))
+
+    mycursor.execute('DELETE FROM universitySchools WHERE universitySchools.collegeID = idOfCollege')
+
+
+def RollbackAction():
+    EstablishConnection.db.rollback()
+
+def CommitAction():
+    EstablishConnection.db.commit()
 
 def generateReport(tuple):
     #SELECT
@@ -217,3 +214,8 @@ def generateReport(tuple):
     #address_id
     #FROM location INTO OUTFILE 'C:\ProgramData\MySQL\location.csv';
     return
+
+# def departmentSubQuery(theDepartment):
+#     # To complete down below; getting some syntax errors for the sub-query
+#     mycursor.execute('SELECT COUNT(*) FROM Department WHERE DepartmentID = (SELECT DepartmentOfCourse FROM Courses INNER JOIN Assignments ON Courses.CourseID = Assignments.CourseID WHERE Assignments.AssignmentDueDate = \'2021-01-11\')')
+#     results = mycursor.fetchall()
