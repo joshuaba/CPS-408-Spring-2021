@@ -58,7 +58,7 @@ def printAssignmentsCoursesFacultyInfo(facultyName):
 
 def printAssignmentsCoursesDepartmentCollegeInfo(schoolName):
     mycursor.execute('SELECT AssignmentID, AssignmentName, AssignmentDueDate, Assignments.isDeleted, Courses.CourseID, Courses.CourseInstructorID, '
-                     'Courses.CourseName, Courses.CourseCode, Courses.isDeleted, Department.DepartmentID, Department.DepartmentName, Department.isDeleted, CollegeID, CollegeName, universitySchools.isDeleted '
+                     'Courses.CourseName, Courses.CourseCode, Courses.isDeleted, Department.DepartmentID, Department.DepartmentName, Department.isDeleted, universitySchools.CollegeID, universitySchools.CollegeName, universitySchools.isDeleted '
                      'FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID INNER JOIN Department ON Courses.DepartmentOfCourse = Department.DepartmentID INNER JOIN '
                      'universitySchools ON Department.collegeID = universitySchools.collegeID WHERE CollegeName = %s;', (schoolName,))
     results = mycursor.fetchall()
@@ -82,40 +82,35 @@ def filterOutstandingAssignmentsByDepartment(theDepartment):
     mycursor.execute('SELECT * FROM Assignments WHERE CourseID IN (SELECT CourseID FROM Courses INNER JOIN Department ON Courses.DepartmentOfCourse = Department.DepartmentID WHERE Department.DepartmentName = %s);', (theDepartment, ))
     results = mycursor.fetchall()
 
-    for i in results:
-        for j in i:
-            print(j, end = ' ')
-        print()
+    df = pd.DataFrame(results, columns=['AssignmentID', 'ID of Corresponding Course', ' AssignmentName', 'AssignmentDueDate', 'AssignmentDeleted?'])
+
+    print(df)
 
 def filterOutstandingAssignmentsByFaculty(theFaculty):
-    mycursor.execute('SELECT * FROM Assignments WHERE CourseID IN (SELECT CourseInstructorID FROM Courses INNER JOIN Faculty ON Courses.CourseInstructorID = Faculty.CourseInstructorID WHERE Faculty.FacultyName = %s);',
+    mycursor.execute('SELECT * FROM Assignments WHERE CourseID IN (SELECT CourseInstructorID FROM Courses INNER JOIN Faculty ON Courses.CourseInstructorID = Faculty.FacultyID WHERE Faculty.FacultyName = %s);',
         (theFaculty,))
     results = mycursor.fetchall()
 
-    for i in results:
-        for j in i:
-            print(j, end=' ')
-        print()
+    df = pd.DataFrame(results, columns=['AssignmentID', 'ID of Corresponding Course', ' AssignmentName', 'AssignmentDueDate',
+                               'AssignmentDeleted?'])
+
+    print(df)
 
 def filterOutstandingAssignmentsByCourse(theCourse):
     mycursor.execute('SELECT * FROM Assignments WHERE CourseID IN (SELECT CourseID FROM Courses WHERE Courses.CourseName = %s);', (theCourse,))
     results = mycursor.fetchall()
 
-    for i in results:
-        for j in i:
-            print(j, end=' ')
-        print()
+    df = pd.DataFrame(results, columns=['AssignmentID', 'ID of Corresponding Course', ' AssignmentName', 'AssignmentDueDate',
+                               'AssignmentDeleted?'])
 
+    print(df)
 #we may not need the below function
 def filterOutstandingAssignmentsBySchool(theCollege):
-    mycursor.execute('SELECT * FROM Assignments WHERE CourseID IN (SELECT CourseID FROM Courses INNER JOIN Department ON Courses.DepartmentOfCourse = Department.Department ID '
+    mycursor.execute('SELECT * FROM Assignments WHERE CourseID IN (SELECT CourseID FROM Courses INNER JOIN Department ON Courses.DepartmentOfCourse = Department.DepartmentID '
                      'INNER JOIN universitySchools ON Department.CollegeID = universitySchools.CollegeID WHERE universitySchools.CollegeName = %s);', (theCollege,))
     results = mycursor.fetchall()
 
-    for i in results:
-        for j in i:
-            print(j, end=' ')
-        print()
 
-printAssignmentsCoursesDepartmentInfo("Anthropology")
+    df = pd.DataFrame(results, columns=['AssignmentID', 'ID of Corresponding Course', ' AssignmentName', 'AssignmentDueDate', 'AssignmentDeleted?'])
 
+    print(df)

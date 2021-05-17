@@ -66,11 +66,12 @@ def theFacultyDetails():
     facultyName = input("Faculty name: ")
     facultyRank = input("Rank of faculty (i.e. \"Assistant/Associate/Full Professor, Lecturer, Instructor, etc.: ")
     isTenured = bool(input("Is this faculty member tenured? (Y/N): "))
+    educationLevel = input("What is the education level of this faculty member? (B.S./B.A, M.S./M.A., Ph.D. etc.")
     correspondingDepartmentName =  input("Please enter the name of the department under which this faculty member will fall (i.e. \"Computer Science\"). Note that the department must already be in the Department table: ")
 
     correspondingDepartmentID = findIDOfCorrespondingDepartment(correspondingDepartmentName)
 
-    EstablishConnection.addFaculty(correspondingDepartmentID, facultyName, facultyRank, isTenured)
+    EstablishConnection.addFaculty(correspondingDepartmentID, facultyName, facultyRank, educationLevel, isTenured)
 
     # mycursor.execute("INSERT INTO Assignments(CourseID, AssignmentName, AssignmentDueDate) VALUES (%s, %s, %s);", (correspondingCourseID, assignmentName, assignmentDueDate,))
     # EstablishConnection.db.commit()
@@ -188,7 +189,11 @@ def deleteFromCourses():
 def deleteFromFaculty():
     idOfFaculty = int(input("What is the id of the faculty member you wish to delete? "))
 
-    mycursor.execute('DELETE FROM Faculty WHERE Faculty.FacultyID = %s;', (idOfFaculty,))
+    mycursor.execute('UPDATE Faculty SET Faculty.isDeleted = 1 WHERE Faculty.FacultyID = %s;', (idOfFaculty,))
+    userSure = doubleCheck()
+    if(userSure):
+        EstablishConnection.db.commit() # commit transaction
+    enforceReferentialIntegrityFacultyDelete(idOfFaculty)
 
 def deleteFromDepartment():
     idOfDepartment = int(input("What is the id of the assignment you wish to delete? "))
@@ -219,3 +224,14 @@ def generateReport(tuple):
 #     # To complete down below; getting some syntax errors for the sub-query
 #     mycursor.execute('SELECT COUNT(*) FROM Department WHERE DepartmentID = (SELECT DepartmentOfCourse FROM Courses INNER JOIN Assignments ON Courses.CourseID = Assignments.CourseID WHERE Assignments.AssignmentDueDate = \'2021-01-11\')')
 #     results = mycursor.fetchall()
+
+def enforceReferentialIntegrityFacultyDelete(idOfFaculty):
+    mycursor.execute('UPDATE Courses SET Courses.CourseInstructorID = 0 WHERE Courses.CourseInstructorID = %s;', (idOfFaculty,))
+
+def doubleCheck():
+    doubleCheck = input("Are you sure you wish to complete this update? This cannot be undone. You'll have to perform another update later on")
+
+    if(doubleCheck == 'Y' or doubleCheck == 'y'):
+        return 1
+    else:
+        return 0
