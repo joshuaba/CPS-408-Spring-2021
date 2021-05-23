@@ -1,0 +1,11 @@
+,DepartmentID,DepartmentName,CollegeID,isDeleted
+0,209,Department of Computer Science,213,0
+1,210,History,211,0
+2,211,English,216,0
+3,212,Creative Writing,216,0
+4,213,Journalism,216,0
+5,214,Investigative Reporting,216,0
+6,215,Speech,216,0
+7,216,Marine Biology,209,0
+8,217,Aquatic Mammal Life,209,0
+9,218,Gerontology Studies,210,0

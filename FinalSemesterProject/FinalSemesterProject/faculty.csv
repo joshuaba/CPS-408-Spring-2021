@@ -1,0 +1,9 @@
+,FacultyID,DepartmentID,FacultyName,FacultyRank,isTenured,educationLevel,isDeleted
+0,204,209,Rene German,Associate Professor,1,Ph.D.,0
+1,205,209,Tom Springer,Assistant Professor,1,Ph.D.,0
+2,206,209,Drew Moshier,Assistant Professor,1,Ph.D.,0
+3,207,209,Tom Richardson,Assistant Professor,1,Ph.D.,0
+4,208,213,Lisa Thompson,Assistant Professor,1,Ph.D.,0
+5,209,213,Craig Smith,Professor,1,M.S.,0
+6,210,215,James Johnson,Assistant Professor,1,Ph.D.,1
+7,211,209,Erik Linstead,Associate Professor,1,Ph.D.,0

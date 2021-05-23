@@ -143,69 +143,63 @@ def returnSchool():
     return
 
 def displayCourseData():
-    mycursor.execute('SELECT * FROM Courses')
+    mycursor.execute('SELECT CourseID, CourseInstructorID, DepartmentOfCourse, CourseName, CourseCode FROM Courses WHERE Courses.isDeleted = 0')
     results = mycursor.fetchall()
 
-    df = pd.DataFrame(results, columns=['CourseID', 'CourseInstructorID', 'DepartmentID', 'CourseName', 'CourseCode', 'isCourseDeleted?'])
+    df = pd.DataFrame(results, columns=['CourseID', 'CourseInstructorID', 'DepartmentID', 'CourseName', 'CourseCode'])
 
     print(df)
 
 def displaySchoolData():
-    mycursor.execute('SELECT * FROM universitySchools')
+    mycursor.execute('SELECT CollegeID, CollegeName, NumOfMajors, NumOfMinors, gradDegreeOffered FROM universitySchools WHERE universitySchools.isDeleted = 0')
     results = mycursor.fetchall()
 
-    df = pd.DataFrame(results, columns=['CollegeID', 'CollegeName', 'Number of Majors', 'Number of Minors', 'Graduate Degree Offered', 'is College Deleted?'])
+    df = pd.DataFrame(results, columns=['CollegeID', 'CollegeName', 'Number of Majors', 'Number of Minors', 'Graduate Degree Offered'])
 
     print(df)
 
 def displayFacultyData():
-    mycursor.execute('SELECT * FROM Faculty')
+    mycursor.execute('SELECT FacultyID, DepartmentID, FacultyName, FacultyRank, isTenured, educationLevel FROM Faculty WHERE Faculty.isDeleted = 0')
     results = mycursor.fetchall()
 
-    df = pd.DataFrame(results, columns=['FacultyID', 'Department to Which Faculty is Assigned', 'Name of Faculty Member', 'Rank of Faculty Member', 'Tenured?', 'Education Level', 'isFacultyDeleted?'])
+    df = pd.DataFrame(results, columns=['FacultyID', 'Department to Which Faculty is Assigned', 'Name of Faculty Member', 'Rank of Faculty Member', 'Tenured?', 'Education Level'])
 
     print(df)
 
 def displayDepartmentData():
-    mycursor.execute('SELECT * FROM Department')
+    mycursor.execute('SELECT DepartmentID, DepartmentName, CollegeID FROM Department WHERE Department.isDeleted = 0')
     results = mycursor.fetchall()
 
-    df = pd.DataFrame(results, columns = ['DepartmentID', 'DepartmentName', 'Corresponding College ID', 'isDepartmentDeleted?'])
+    df = pd.DataFrame(results, columns = ['DepartmentID', 'DepartmentName', 'Corresponding College ID',])
     print(df)
 
 def addAssignment(courseid, name, dueDate):
-    mycursor.execute(
-        'Insert into Assignments(CourseID, AssignmentName, AssignmentDueDate, isDeleted) VALUES (?,?,?,0)',
-        (courseid, name, dueDate,))
-    db.commit()
+    mycursor.execute('Insert into Assignments(CourseID, AssignmentName, AssignmentDueDate, isDeleted) VALUES (%s,%s,%s,0)',(courseid, name, dueDate,))
+    # db.commit()
     return
 
 def addCourse(instructorID, dept, courseName, courseCode):
-    mycursor.execute(
-        'Insert into Assignments(CourseInstructorID, DepartmentOfCourse, CourseName, CourseCode, isDeleted) VALUES (%s, %s, %s, %s,0)',
+    mycursor.execute('Insert into Courses(CourseInstructorID, DepartmentOfCourse, CourseName, CourseCode, isDeleted) VALUES (%s, %s, %s, %s,0)',
         (instructorID, dept, courseName, courseCode,))
-    db.commit()
+    # db.commit()
     return
 
 def addDepartment(name, collegeid):
-    mycursor.execute(
-        'Insert into Assignments(DepartmentName, CollegeID, isDeleted) VALUES (%s, %s,0)',
+    mycursor.execute('INSERT INTO Department(DepartmentName, CollegeID, isDeleted) VALUES (%s, %s,0)',
         (name, collegeid,))
-    db.commit()
+    # db.commit()
     return
 
 def addFaculty(departmentID, name, rank, educationLevel, tenure):
-    mycursor.execute(
-        'Insert into Faculty(DepartmentID, FacultyName, FacultyRank, educationLevel, isTenured, isDeleted) VALUES (%s, %s, %s, %s, %s,0)',
-        (departmentID, name, rank, educationLevel, tenure,))
-    db.commit()
+    mycursor.execute('Insert into Faculty(DepartmentID, FacultyName, FacultyRank, educationLevel, isTenured, isDeleted) VALUES (%s, %s, %s, %s, %s,0)', (departmentID, name, rank, educationLevel, tenure,))
+    # db.commit()
     return
 
 def addCollege(name, NumMajors, NumMinors, grad):
     mycursor.execute(
-        'Insert into Assignments(CollegeName, NumOfMajors, NumOfMinors, gradDegreeOffered, isDeleted) VALUES (%s, %s, %s, %s,0)',
+        'Insert into universitySchools(CollegeName, NumOfMajors, NumOfMinors, gradDegreeOffered, isDeleted) VALUES (%s, %s, %s, %s,0)',
         (name, NumMajors, NumMinors, grad,))
-    db.commit()
+    # db.commit()
     return
 
 def updateAssignment():
@@ -214,21 +208,21 @@ def updateAssignment():
     if column.lower() == "name":
         name = input("What would you like to change the name of the assignment to?")
         mycursor.execute('Update Assignment set AssignmentName = %s where AssignmentID = %s', (name, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "duedate":
         dd = input("What would you like to change the due date of the assignment to?")
         mycursor.execute('Update Assignment set AssignmentDueDate = %s where AssignmentID = %s', (dd, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "all":
         name = input("What would you like to change the name of the assignment to?")
         mycursor.execute('Update Assignment set AssignmentName = %s where AssignmentID = %s', (name, id))
-        db.commit()
+        # db.commit()
 
         dd = input("What would you like to change the due date of the assignment to?")
         mycursor.execute('Update Assignment set AssignmentDueDate = %s where AssignmentID = %s', (dd, id))
-        db.commit()
+        # db.commit()
     else:
         print("Invalid input.")
 
@@ -241,21 +235,21 @@ def updateCourse():
     if column.lower() == "name":
         name = input("What would you like to change the name of the course to?")
         mycursor.execute('Update Courses set CourseName = %s where CourseID = %s', (name, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "code":
         code = input("What would you like to change the code of the course to?")
         mycursor.execute('Update Courses set CourseCode = %s where CourseID = %s', (code, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "all":
         name = input("What would you like to change the name of the course to?")
         mycursor.execute('Update Courses set CourseName = %s where CourseID = %s', (name, id))
-        db.commit()
+        # db.commit()
 
         code = input("What would you like to change the code of the course to?")
         mycursor.execute('Update Courses set CourseCode = %s where CourseID = %s', (code, id))
-        db.commit()
+        # db.commit()
     else:
         print("Invalid input.")
 
@@ -266,7 +260,7 @@ def updateDepartment():
     name = input("What would you like to updates the department's name to?")
 
     mycursor.execute('Update Department set DepartmentName = %s where DepartmentID = %s', (name, id))
-    db.commit()
+    # db.commit()
 
     return
 
@@ -276,39 +270,39 @@ def updateFaculty():
     if column.lower() == "name":
         name = input("What would you like to change the name of the faculty to?")
         mycursor.execute('Update Faculty set FacultyName = %s where FacultyID = %s', (name, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "rank":
         rank = input("What would you like to change the rank of the faculty to?")
         mycursor.execute('Update Faculty set FacultyRank = %s where FacultyID = %s', (rank, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "education level":
         level = input("What would you like to change the education level of the faculty to?")
         mycursor.execute('Update Faculty set educationLevel = %s where FacultyID = %s', (level, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "tenure":
         status = input("What would you like to change the tenure status of the faculty to?")
         mycursor.execute('Update Faculty set isTenured = %s where FacultyID = %s', (status, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "all":
         name = input("What would you like to change the name of the faculty to?")
         mycursor.execute('Update Faculty set FacultyName = %s where FacultyID = %s', (name, id))
-        db.commit()
+        # db.commit()
 
         rank = input("What would you like to change the rank of the faculty to?")
         mycursor.execute('Update Faculty set FacultyRank = %s where FacultyID = %s', (rank, id))
-        db.commit()
+        # db.commit()
 
         level = input("What would you like to change the education level of the faculty to?")
         mycursor.execute('Update Faculty set educationLevel = %s where FacultyID = %s', (level, id))
-        db.commit()
+        # db.commit()
 
         status = input("What would you like to change the tenure status of the faculty to?")
         mycursor.execute('Update Faculty set isTenured = %s where FacultyID = %s', (status, id))
-        db.commit()
+        # db.commit()
     else:
         print("Invalid input.")
     return
@@ -319,39 +313,39 @@ def updateCollege():
     if column.lower() == "name":
         name = input("What would you like to change the name of the college to?")
         mycursor.execute('Update universitySchools set CollegeName = %s where CollegeID = %s', (name, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "number of majors":
         majors = int(input("What would you like to change the number of majors offered by the college to?"))
         mycursor.execute('Update universitySchools set NumOfMajors = %s where CollegeID = %s', (majors, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "number of minors":
         minors = int(input("What would you like to change the number of minors offered by the college to?"))
         mycursor.execute('Update universitySchools set NumOfMinors = %s where CollegeID = %s', (minors, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "graduate degree":
         grad = input("What would you like to change the graduate degree offered by the college to?")
         mycursor.execute('Update universitySchools set gradDegreeOffered = %s where CollegeID = %s', (grad, id))
-        db.commit()
+        # db.commit()
 
     elif column.lower() == "all":
         name = input("What would you like to change the name of the college to?")
         mycursor.execute('Update universitySchools set CollegeName = %s where CollegeID = %s', (name, id))
-        db.commit()
+        # db.commit()
 
         majors = int(input("What would you like to change the number of majors offered by the college to?"))
         mycursor.execute('Update universitySchools set NumOfMajors = %s where CollegeID = %s', (majors, id))
-        db.commit()
+        # db.commit()
 
         minors = int(input("What would you like to change the number of minors offered by the college to?"))
         mycursor.execute('Update universitySchools set NumOfMinors = %s where CollegeID = %s', (minors, id))
-        db.commit()
+        # db.commit()
 
         grad = input("What would you like to change the graduate degree offered by the college to?")
         mycursor.execute('Update universitySchools set gradDegreeOffered = %s where CollegeID = %s', (grad, id))
-        db.commit()
+        # db.commit()
     else:
         print("Invalid input.")
     return

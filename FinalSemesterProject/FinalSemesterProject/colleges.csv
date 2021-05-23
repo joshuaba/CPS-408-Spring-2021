@@ -1,0 +1,9 @@
+,CollegeID,CollegeName,NumOfMajors,NumOfMinors,gradDegreeOffered,isDeleted
+0,209,Johnson School of Oceanography,10,5,1,0
+1,210,Taylor School of Gerontology,10,5,1,0
+2,211,Reese School of Social Studies,10,5,1,0
+3,212,James Arnold School of Engineering,10,5,1,0
+4,213,Rene German School of Computer Sciences,5,2,1,0
+5,214,Keck School of Medicine,5,2,1,0
+6,215,Leonard Davis School of Gerontology,1,0,1,0
+7,216,Thompson School of Arts and Humanities,1,0,1,0

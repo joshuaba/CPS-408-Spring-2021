@@ -1,14 +1,22 @@
 import InsertDeleteValues
 import EstablishConnection
 import DBQueries
+import CreateViews
 import mysql.connector
 from faker import Faker
 import csv
 import datetime
+import pyfiglet
+from pyfiglet import Figlet
 
 
 def mainMenu():
-    print("Welcome to the assignment database")
+    # ascii_banner = pyfiglet.figlet_format("Welcome to the assignment database")
+    # print(ascii_banner)
+
+    custom_figlet = Figlet(width=250)
+
+    print(custom_figlet.renderText("Welcome to the assignment database"))
 
     while(True):
 
@@ -31,10 +39,16 @@ def mainMenu():
 
         if((userOption) == 'Q' or userOption == 'q'):
             print() #formatting
-            print("Exiting")
+            exit_banner = pyfiglet.figlet_format("Exiting")
+            print(exit_banner)
             break
 
-        userOption = int(userOption)
+        if(userOption.isnumeric()):
+            userOption = int(userOption)
+        else:
+            print() # formatting
+            invalidInputFiglet = Figlet(width=250)
+            print(invalidInputFiglet.renderText("Invalid input. Please type a value from 1 - 9"))
 
         if(userOption == 1):
             EstablishConnection.printAllAssignments() # print out all of the assignments currently in the database
@@ -151,9 +165,9 @@ def mainMenu():
                     repeat = False
                 elif (tableToAdd == 5):
                     InsertDeleteValues.universitySchoolsDetails()
+                    repeat = False
                 else:
-                    print(
-                        "Unrecognized input. Please type a value from 1 - 4, depending on the table from which you would like to print the records")
+                    print("Unrecognized input. Please type a value from 1 - 4, depending on the table from which you would like to print the records")
 
         elif(userOption == 5):
             repeat = True
@@ -185,16 +199,37 @@ def mainMenu():
                         "Unrecognized input. Please type a value from 1 - 4, depending on the table from which you would like to print the records")
 
         elif(userOption == 6):
-            specifics = input("From which tables would you like to pull information: \n\
-                             1: Assignments and Courses\n\
-                             2: Assignments and Faculty\n\
-                             3: Assignments and Department\n\
-                             4: Assignments and College")
+            repeat = True
+            while(repeat):
+                specifics = input("From which tables would you like to pull information: \n\
+                                 1: Assignments and Courses\n\
+                                 2: Assignments and Faculty\n\
+                                 3: Assignments and Department\n\
+                                 4: Assignments and College\n\
+                                 Option: ")
+                if(int(specifics) == 1):
+                    CreateViews.CreateViewAssignmentsCourses()
+                    repeat = False
+
+                elif(int(specifics) == 2):
+                    CreateViews.CreateViewAssignmentsFaculty()
+                    repeat = False
+
+                elif(int(specifics) == 3):
+                    CreateViews.CreateViewAssignmentsDepartment()
+                    repeat = False
+
+                elif(int(specifics) == 4):
+                    CreateViews.CreateViewAssignmentsCollege()
+                    repeat = False
+
+                else:
+                    print("Invalid input. Please type a value from 1 - 4")
 
         elif(userOption == 7):
             repeat = True
             while (repeat):
-                selection = input("Which table would you like to have a report of? (Assignments, Courses, Departments, Faculty, Schools)")
+                selection = input("Which table would you like to have a report of? Type \"exit\" to quit (Assignments, Courses, Departments, Faculty, Schools)")
                 if selection.lower() == "assignments":
                     EstablishConnection.returnAssignments()
                 elif selection.lower() == "courses":
@@ -212,10 +247,11 @@ def mainMenu():
 
 
         elif(userOption == 8):
-            InsertDeleteValues.CommitAction() # Commit all of the actions the user has taken
+            InsertDeleteValues.RollbackAction() # Rollback all of the actions the user has taken
 
         elif(userOption == 9):
-            InsertDeleteValues.RollbackAction() # Rollback all of the actions the user has taken
+            InsertDeleteValues.CommitAction() # Commit all of the actions the user has taken
+
 
 if __name__ == "__main__":
     mainMenu()

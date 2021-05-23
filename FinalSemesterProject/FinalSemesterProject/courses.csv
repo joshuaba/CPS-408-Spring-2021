@@ -1,0 +1,8 @@
+,CourseID,CourseInstructorID,DepartmentOfCourse,CourseName,CourseCode,isDeleted
+0,198,204,209,Database Management,CPSC 408,0
+1,199,205,209,Operating Systems,CPSC 380,0
+2,200,205,209,Network Security,CPSC 453,0
+3,201,210,215,Speech I,SPCH 100,0
+4,202,210,215,Speech II,SPCH 102,0
+5,203,210,215,Speech Techniques,SPCH 207,0
+6,204,208,213,Investigatve Tecniques,JRLM 102,0

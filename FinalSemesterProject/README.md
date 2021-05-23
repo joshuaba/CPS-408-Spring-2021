@@ -1,8 +1,9 @@
-FinalSemesterProject 
+# FinalSemesterProject 
 
 Authors: Brandon Kleinman, Joshua Barrs
 
-#To be added
+//To be added
+
 Sources used: 
 1) https://www.viralpatel.net/reseting-mysql-autoincrement-column/
 2) https://stackoverflow.com/questions/16991948/detect-if-a-variable-is-a-datetime-object#16991985
@@ -15,5 +16,7 @@ Sources used:
 9) https://www.w3resource.com/sql/subqueries/multiplee-row-column-subqueries.php
 10) https://www.journaldev.com/23932/sql-commit-sql-rollback
 11) https://www.techbeamers.com/understand-python-statement-indentation/
-12) Zybook
+12) https://www.w3schools.com/SQl/sql_foreignkey.asp
+13) https://www.techonthenet.com/sql_server/foreign_keys/drop.php
+14) Zybook
 

@@ -12,9 +12,9 @@ pd.set_option('display.width', None)
 mycursor = InsertDeleteValues.mycursor
 
 def printAssignmentsCoursesDepartmentInfo(departmentName):
-    mycursor.execute('SELECT AssignmentID, AssignmentName, AssignmentDueDate, Assignments.isDeleted, Courses.CourseID, Courses.CourseInstructorID, '
-                     'Courses.CourseName, Courses.CourseCode, Courses.isDeleted, Department.DepartmentID, Department.DepartmentName, Department.isDeleted FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID INNER JOIN Department ON Courses.DepartmentOfCourse = Department.DepartmentID '
-                     'WHERE DepartmentName = %s;', (departmentName,))
+    mycursor.execute('SELECT AssignmentID, AssignmentName, AssignmentDueDate, Courses.CourseID, Courses.CourseInstructorID, '
+                     'Courses.CourseName, Courses.CourseCode, Department.DepartmentID, Department.DepartmentName, FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID INNER JOIN Department ON Courses.DepartmentOfCourse = Department.DepartmentID '
+                     'WHERE DepartmentName = %s AND Assignments.isDeleted = 0 AND Courses.isDeleted = 0 AND Department.isDeleted = 0;', (departmentName,))
     results = mycursor.fetchall()
 
     # for i in results:
@@ -36,7 +36,7 @@ def printAssignmentsCoursesDepartmentInfo(departmentName):
     #                 resultsAsList.remove(j)
 
     df = pd.DataFrame(results, columns = ['AssignmentID',' AssignmentName', 'AssignmentDueDate', 'AssignmentDeleted?', 'CourseID', 'CourseInstructorID',
-                     'CourseName', 'CourseCode', 'CourseDeleted?', 'DepartmentID', 'DepartmentName', 'DepartmentisDeleted?'])
+                     'CourseName', 'CourseCode', 'CourseDeleted?', 'DepartmentID', 'DepartmentName'])
 
     print(df)
 
@@ -44,33 +44,33 @@ def printAssignmentsCoursesDepartmentInfo(departmentName):
     #     print(results)
 
 def printAssignmentsCoursesFacultyInfo(facultyName):
-    mycursor.execute('SELECT AssignmentID, AssignmentName, AssignmentDueDate, Assignments.isDeleted, Courses.CourseID, Courses.CourseInstructorID, '
-                     'Courses.CourseName, Courses.CourseCode, Courses.isDeleted, Faculty.FacultyName, Faculty.isDeleted '
+    mycursor.execute('SELECT AssignmentID, AssignmentName, AssignmentDueDate, Courses.CourseID, Courses.CourseInstructorID, '
+                     'Courses.CourseName, Courses.CourseCode, Faculty.FacultyName, '
                      'FROM Assignments INNER JOIN Courses on Assignments.CourseID = Courses.CourseID INNER JOIN Faculty ON Courses.CourseInstructorID = Faculty.FacultyID '
-                     'WHERE FacultyName = %s;', (facultyName,))
+                     'WHERE FacultyName = %s AND Assignments.isDeleted = 0 AND Courses.isDeleted = 0 AND Faculty.isDeleted = 0;', (facultyName,))
     results = mycursor.fetchall()
 
 
-    df = pd.DataFrame(results, columns=['AssignmentID', ' AssignmentName', 'AssignmentDueDate', 'AssignmentDeleted?', 'CourseID',
-                               'CourseInstructorID', 'CourseName', 'CourseCode', 'CourseDeleted?', 'FacultyName', 'FacultyisDeleted?'])
+    df = pd.DataFrame(results, columns=['AssignmentID', ' AssignmentName', 'AssignmentDueDate', 'CourseID',
+                               'CourseInstructorID', 'CourseName', 'CourseCode', 'FacultyName'])
 
     print(df)
 
 def printAssignmentsCoursesDepartmentCollegeInfo(schoolName):
-    mycursor.execute('SELECT AssignmentID, AssignmentName, AssignmentDueDate, Assignments.isDeleted, Courses.CourseID, Courses.CourseInstructorID, '
-                     'Courses.CourseName, Courses.CourseCode, Courses.isDeleted, Department.DepartmentID, Department.DepartmentName, Department.isDeleted, universitySchools.CollegeID, universitySchools.CollegeName, universitySchools.isDeleted '
+    mycursor.execute('SELECT AssignmentID, AssignmentName, AssignmentDueDate, Courses.CourseID, Courses.CourseInstructorID, '
+                     'Courses.CourseName, Courses.CourseCode, Department.DepartmentID, Department.DepartmentName, universitySchools.CollegeID, universitySchools.CollegeName, '
                      'FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID INNER JOIN Department ON Courses.DepartmentOfCourse = Department.DepartmentID INNER JOIN '
-                     'universitySchools ON Department.collegeID = universitySchools.collegeID WHERE CollegeName = %s;', (schoolName,))
+                     'universitySchools ON Department.collegeID = universitySchools.collegeID WHERE CollegeName = %s AND Assignments.isDeleted = 0 AND Courses.isDeleted = 0 AND Department.isDeleted = 0 AND universitySchools.isDeleted = 0;', (schoolName,))
     results = mycursor.fetchall()
 
-    df = pd.DataFrame(results, columns=['AssignmentID',' AssignmentName', 'AssignmentDueDate', 'AssignmentDeleted?', 'CourseID', 'CourseInstructorID',
-                     'CourseName', 'CourseCode', 'CourseDeleted?', 'DepartmentID', 'DepartmentName', 'DepartmentisDeleted?', 'CollegeID', 'CollegeName', 'CollegeIsDeleted'])
+    df = pd.DataFrame(results, columns=['AssignmentID',' AssignmentName', 'AssignmentDueDate', 'CourseID', 'CourseInstructorID',
+                     'CourseName', 'CourseCode', 'DepartmentID', 'DepartmentName', 'CollegeID', 'CollegeName'])
 
     print(df)
 
 def printAssignmentsCoursesInfo(courseName):
-    mycursor.execute('SELECT AssignmentID, AssignmentName, AssignmentDueDate, Assignments.isDeleted, Courses.CourseID, Courses.CourseInstructorID, '
-                     'Courses.CourseName, Courses.CourseCode, Courses.isDeleted FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID WHERE CourseName = %s;', (courseName,))
+    mycursor.execute('SELECT AssignmentID, AssignmentName, AssignmentDueDate, Courses.CourseID, Courses.CourseInstructorID, '
+                     'Courses.CourseName, Courses.CourseCode FROM Assignments INNER JOIN Courses ON Assignments.CourseID = Courses.CourseID WHERE CourseName = %s AND Assignments.isDeleted = 0 AND Courses.isDeleted = 0;', (courseName,))
     results = mycursor.fetchall()
 
     df = pd.DataFrame(results, columns=['AssignmentID', ' AssignmentName', 'AssignmentDueDate', 'AssignmentDeleted?', 'CourseID',
