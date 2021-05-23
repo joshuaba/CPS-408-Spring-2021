@@ -41,10 +41,10 @@ def theCourseDetails():
     courseName = input("Course name: ")
     courseCode = input("Please input the course's code, as in \"CPSC 231\": ")
 
-    # while(not validateCourseCoude(courseCode)): #make sure the user inputted a valid course code
-    #     print() #formatting
-    #     print("Course code is invalid. ", end="")
-    #     courseCode = input("Please input the course's code, as in \"CPSC 231\": ")
+    while(not validateCourseCoude(courseCode)): #make sure the user inputted a valid course code
+        print() #formatting
+        print("Course code is invalid. ", end="")
+        courseCode = input("Please input the course's code, as in \"CPSC 231\": ")
 
     instructorName = input("Please input the name of the instructor of this course (the instructor/faculty member must be in the faculty table): ")
     departmentOfCourse = input("Please enter the academic department under which this course will fall (i.e. \"Computer Science\"). Note that the course must already be in the Courses table: ")
@@ -285,7 +285,7 @@ def doubleCheck():
         return 0
 
 def validateCourseCoude(theCourseCode):
-    thePattern = "({4}) (\d{3})"
+    thePattern = "([A-Z]{4}) (\d{3})"
     isValid = re.match(thePattern, theCourseCode)
 
     if(isValid):

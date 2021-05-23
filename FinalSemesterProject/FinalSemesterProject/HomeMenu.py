@@ -248,9 +248,13 @@ def mainMenu():
 
         elif(userOption == 8):
             InsertDeleteValues.RollbackAction() # Rollback all of the actions the user has taken
+            print()
+            print("Changes rolled back")
 
         elif(userOption == 9):
             InsertDeleteValues.CommitAction() # Commit all of the actions the user has taken
+            print()
+            print("Changes committed")
 
 
 if __name__ == "__main__":
