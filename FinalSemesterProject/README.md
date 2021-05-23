@@ -2,7 +2,7 @@
 
 Authors: Brandon Kleinman, Joshua Barrs
 
-//To be added
+The application can be run in Pycharm. Please download source Pycharm directory and run the program using Pycharm IDE. 
 
 Sources used: 
 1) https://www.viralpatel.net/reseting-mysql-autoincrement-column/
